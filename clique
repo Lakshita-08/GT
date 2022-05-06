@@ -1,0 +1,86 @@
+#include <iostream>
+#include<bits/stdc++.h>
+# define all(x) x.begin(),x.end()
+using namespace std;
+
+struct Graph{
+    int V,E;
+    vector<vector<int>>list;
+    vector<int>degree;
+};
+typedef struct Graph Graph;
+
+Graph* create(){
+    int v,e;
+    cout<<"*********************************\n";
+    cout<<"Enter the No. of Vertices: ";
+    cin>>v;
+    cout<<"*********************************\n";
+    cout<<"Enter the No. of Edges: ";
+    cin>>e;
+    cout<<"*********************************\n\n";
+    Graph *g=(Graph*)malloc(sizeof(Graph));
+    g->V=v;
+    g->E=e;
+    g->list.resize(v);
+    cout<<"|=================================|\n";
+    int a,b;
+    g->degree.resize(v);
+    for(int i=0;i<e;i++){
+        cout<<"|Enter vertices for E"<<i+1<<": ";
+        cin>>a>>b;
+        cout<<"|---------------------------------|\n";
+        g->list[a-1].push_back(b-1);
+        g->list[b-1].push_back(a-1);
+        g->degree[a-1]++;
+        g->degree[b-1]++;
+    }
+    return g;
+}
+
+bool clique(Graph *g,int k){
+    if(g->V==k && 2*g->E==k*(k-1))
+        return true;
+    if(g->V<k||2*g->E<k*(k-1))
+        return false;
+    for(int l=0;l<g->V;l++){
+        if(g->degree[l]<k)
+            continue;
+        map<int,int>mp;
+        vector<int>adj;
+        for(auto m:g->list[l]){
+            mp[m]++;
+            adj.push_back(m);
+        }
+        for(auto m:adj){
+            for(auto n:g->list[m])
+                mp[n]++;
+        }
+        int count=0;
+        vector<int>Kn;
+        for(int m=0;m<mp.size();m++){
+            if(mp[m]>=k-1){
+                count++;
+                Kn.push_back(m);
+            }
+        }
+        if(count>=k){
+            /*for(auto i:Kn)
+                cout<<i+1<<" ";*/
+            return true;
+        }
+    }
+    return false;
+}
+
+int main()
+{
+    Graph *g=create();
+    int cl=-1;
+    for(int i=0;i<g->V;i++){
+    if(clique(g,i+1))
+        cl=max(cl,i+1);
+    }
+    cout<<"Maximim Clique is of "<<cl;
+    return 0;
+}
