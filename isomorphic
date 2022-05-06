@@ -1,0 +1,69 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int N1,N2,M1,M2;
+vector<vector<int>> g1,g2;
+vector<int> permutation;
+bool findPermutation()
+{
+    vector<vector<int>> adj1(N1+1,vector<int>(N1+1,0));
+    vector<vector<int>> adj2(N2+1,vector<int>(N2+1,0));
+    for(int i=1;i<=N1;i++)
+    {
+        for(int j:g1[i])
+            adj1[i][j]++;
+    }
+    for(int i=1;i<=N2;i++)
+    {
+        for(int j:g2[i])
+            adj2[i][j]++;
+    }
+    permutation.assign(N1+1,0);
+    for(int i=1;i<=N1;i++) permutation[i]=i;
+    do
+    {
+        for(int i:permutation)cout<<i<<" ";
+        cout<<endl;
+        bool ok=true;
+        for(int i=1;i<=N1;i++)
+        {
+            for(int j=1;j<=N2;j++)
+            {
+                if(adj1[i][j]!=adj2[permutation[i]][permutation[j]])
+                {
+                    ok=false;
+                    continue;
+                }
+            }
+        }
+        if(ok)
+            return true;
+    } while (next_permutation(permutation.begin()+1,permutation.end()));
+    return false;
+}
+
+bool validate3()
+{
+    vector<int> deg1,deg2;
+    for(int i=1;i<=N1;i++)
+        deg1.push_back(g1[i].size());
+    for(int i=1;i<=N2;i++)
+        deg2.push_back(g2[i].size());
+    sort(deg1.begin(),deg1.end());
+    sort(deg2.begin(),deg2.end());
+    
+    for(int i=0;i<deg1.size();i++)
+    {
+        if(deg1[i]!=deg2[i])
+            return false;
+    }
+    return true;
+}
+bool validate2()
+{
+    return M1==M2;
+}
+bool validate1()
+{
+    return N1==N2;
+}
