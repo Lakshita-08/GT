@@ -1,0 +1,123 @@
+
+#include <bits/stdc++.h>
+using namespace std;
+int find(int src,vector <int>&parent)
+{
+    if(parent[src]==src)
+    return src;
+    return parent[src] = find(parent[src],parent);
+}
+int cnt;
+void Merge(int a,int b,vector <int> &parent,vector <vector <int> > &temp)
+{
+    int x = find(a,parent);
+    int y = find(b,parent);
+    if(x!=y)
+    {
+        parent[y]= find(parent[x],parent);
+        cnt--;
+    }
+}
+void karger(vector <int> &parent,vector <vector <int> > &temp)
+{
+    while(cnt>2)
+    {
+       bool f=true;
+        
+
+        while(f)
+        {
+            cout<<"Enter random Edge : ";
+            int a,b;
+            cin>>a>>b;
+            if(temp[a][b]==0)
+            {
+                cout<<"Not Valid Edge"<<endl;
+
+            }
+            else
+            {
+                f=false;
+                Merge(a,b,parent,temp);
+                int p1 = find(b,parent);
+                //int p2 = find(a,parent);
+                vector <int> v;
+                //cout<<p1<<" "<<p2<<endl;
+                for(int i=0;i<parent.size();i++)
+                {
+                    //cout<<parent[i]<<endl;
+                    if(find(i,parent)==p1)
+                    
+                        v.push_back(i);
+                }
+                
+               
+                //cout<<"parent : ";
+                //for(int i=0;i<v.size();i++) cout<<v[i]<<" ";
+               // cout<<"hi"<<endl;
+                for(int i=0;i<v.size();i++)
+                {
+                    for(int j=i+1;j<v.size();j++)
+                    {
+                        temp[v[i]][v[j]]=0;
+                        temp[v[j]][v[i]]=0;
+                    }
+                }
+               
+
+            }
+            // for(int i=0;i<temp.size();i++)
+            // {
+            //     for(int j=0;j<temp[i].size();j++)
+            //     {
+            //         cout<<temp[i][j]<<" ";
+            //     }
+            //     cout<<endl;
+            // }
+
+        }
+        //cout<<cnt<<endl;
+        
+    
+}
+}
+int main()
+{
+    int n;
+    
+    cout<<"Enter No. of Nodes : ";
+    cin>>n;
+
+    vector <vector <int> > adj(n,vector <int> (n,0));
+    int m;
+    cout<<"Enter No. of Edges : ";
+    cin>>m;
+   // cout<<m;
+    for(int i=0;i<m;i++)
+    {
+        // cout<<"Enter edge : "<<i+1<<
+        // " : "<<endl;
+        int x,y;
+        cin>>x>>y;
+        adj[x][y] = 1;
+        adj[y][x] = 1;
+    }
+    vector <vector <int> > temp(n,vector <int> (n,0));
+    temp= adj;
+    vector <int> parent(n);
+    for(int i=0;i<n;i++) parent[i] = i;
+    cnt=n;
+    karger(parent,temp);
+    cout<<"Cut Edges : "<<endl;
+    for(int i=0;i<temp.size();i++)
+    {
+        for(int j=i+1;j<temp[i].size();j++)
+        {
+            if(temp[i][j]==1)
+            {
+                cout<<i<<" "<<j<<endl;
+            }
+        }
+    }
+    
+}
