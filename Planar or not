@@ -1,0 +1,205 @@
+#include <iostream>
+#include <vector>
+#include <set>
+#include <algorithm>
+using namespace std;
+
+// Helper function which erases all occurences of
+// an element from the given vector
+void eraseElement(vector<int>& vec, int element) {
+    vec.erase(remove(vec.begin(), vec.end(), element), vec.end());
+}
+
+void printGraph(vector<vector<int>>& graph) {
+    int n = graph.size();
+
+    for(int i = 0; i < n; ++i) {
+        cout<<i<<": ";
+        for(int u : graph[i]) {
+            cout<<u<<" ";
+        }
+        cout<<endl;
+    }
+    cout<<endl;
+}
+
+int numberOfVertices(vector<vector<int>>& graph) {
+    int n = graph.size();
+    int num_of_vertices = 0;
+
+    for(int i = 0; i < n; ++i) {
+        num_of_vertices += (graph.size() > 0);
+    }
+
+    return num_of_vertices;
+}
+
+// returns the number of edges in the graph
+int numberOfEdges(vector<vector<int>>& graph) {
+    int n = graph.size();
+
+    int num_of_edges = 0;
+    for(int i = 0; i < n; ++i) {
+        num_of_edges += graph[i].size();
+    }
+
+    return num_of_edges / 2;
+}
+
+// Removes all parallel edges.
+// Returns false if the graph has no parallel edges
+bool RemoveParallelEdges(vector<vector<int>>& graph) {
+    int n = graph.size();
+    bool has_parallel_edges = false;
+
+    for(int i = 0; i < n; ++i) {
+        sort(graph[i].begin(), graph[i].end());
+
+        set<int> st(graph[i].begin(), graph[i].end());
+        vector<int> new_list(st.begin(), st.end());
+
+        if(new_list != graph[i]) {
+            has_parallel_edges = true;
+        }
+
+        graph[i] = new_list;
+    }
+
+    return has_parallel_edges;
+}
+
+// Removes all self-loops from the graph.
+// Returns false if there were no self-loops in the graph.
+bool RemoveSelfLoops(vector<vector<int>>& graph) {
+    int n = graph.size();
+    bool has_selfloops = false;
+
+    for(int i = 0; i < n; ++i) {
+        set<int> st(graph[i].begin(), graph[i].end());
+
+        auto it = st.find(i);
+        if(it != st.end()) {
+            has_selfloops = true;
+            st.erase(it);
+
+            graph[i] = vector<int>(st.begin(), st.end());
+        }
+    }
+
+    return has_selfloops;
+}
+
+// Merges all edges in series.
+// Returns false if there were no such edges.
+bool MergeSeries(vector<vector<int>>& graph) {
+    int n = graph.size();
+
+    bool has_series = false;
+    for(int i = 0; i < n; ++i) {
+        // only check vertices having degree 2.
+        if(graph[i].size() != 2) continue;
+
+        int a = graph[i][0];
+        int b = graph[i][1];
+
+        // parallel edges are not in series.
+        if(a == b) continue;
+
+        has_series = true;
+
+        graph[a].push_back(b);
+        graph[b].push_back(a);
+
+        eraseElement(graph[a], i);
+        eraseElement(graph[b], i);
+
+        graph[i].clear();
+    }
+
+    return has_series;
+}
+
+bool IsPlanar(vector<vector<int>> graph) {
+    int n = graph.size();
+
+    bool has_selfloops = true;
+    bool has_parallel_edges = true;
+    bool has_series = true;
+
+    int iterations = 1;
+
+    while(has_selfloops || has_parallel_edges || has_series) {
+        cout<<"\nIteration #"<<iterations<<": \n";
+
+        has_parallel_edges = RemoveParallelEdges(graph);
+        cout<<"1) After Removing Parallel Edges: \n";
+        printGraph(graph);
+
+        has_selfloops = RemoveSelfLoops(graph);
+        cout<<"2) After Removing Self-Loops: \n";
+        printGraph(graph);
+
+        has_series = MergeSeries(graph);
+        cout<<"3) After Merging Series: \n";
+        printGraph(graph);
+
+        iterations++;
+    }
+
+    int number_of_edges = numberOfEdges(graph);
+    int number_of_vertices = numberOfVertices(graph);
+
+    // if the resultant graph is a single edge,it is planar
+    if(number_of_edges == 1) {
+        cout<<"\nThe final graph is a single edge."<<endl;
+        return true;
+    }
+
+    // if the resultant graph is the complete graph
+    // with four vertices, it is planar
+    if(number_of_vertices == 4 && number_of_edges == 6) {
+        cout<<"\nThe final graph is the complete graph of 4 vertices."<<endl;
+        return true;
+    }
+
+    if(number_of_edges > 3 * n - 6) {
+        cout<<"\nThe final graph doesn't satisfy the condition e <= 3n - 6."<<endl;
+        return false;
+    }
+
+    if(number_of_edges > 2 * n - 4) {
+        cout<<"\nThe final graph doesn't satisfy the condition e <= 2n - 4."<<endl;
+        return false;
+    }
+
+    return true;
+}
+
+int main() {
+    cout<<"Enter the number of vertices in the graph: ";
+    int n;
+    cin>>n;
+
+    cout<<"Enter the number of edges: ";
+    int m;
+    cin>>m;
+
+    vector<vector<int>> graph(n);
+    for(int i = 1; i <= m; ++i) {
+        cout<<"Enter Edge #"<<i<<": ";
+        int u, v;
+        cin>>u>>v;
+
+        graph[u].push_back(v);
+        graph[v].push_back(u);
+    }
+
+    bool is_planar = IsPlanar(graph);
+
+    if(is_planar) {
+        cout<<"The given graph is a planar graph."<<endl;
+    }
+    else {
+        cout<<"The given graph is not a planar graph."<<endl;
+    }
+}
