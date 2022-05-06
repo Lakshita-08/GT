@@ -1,0 +1,309 @@
+//Lakshita Jain
+//19bce102
+
+#include <bits/stdc++.h>
+using namespace std;
+// vector<int> adjlist1[1000];
+// vector<int> adjlist2[1000];
+
+int main(){
+    cout<<"Enter the number of time you want to run this code :- \n";
+    int test;
+    cin>>test;
+    for (int t=0;t<test;t++){
+
+    int V1,E1;
+    // adjlist1[vertex_1].push_back(vertex_2);
+    // adjlist1[vertex_2].push_back(vertex_1);
+    cout <<"Enter the number of vertices for graph G1:- " ;
+    cin >> V1;
+    cout <<"Enter the number of edges for graph G1:- " ;
+    cin >>E1;
+    int G1[V1][V1];
+
+    for(int i=0;i<V1;i++){
+        for(int j=0;j<V1;j++){
+            G1[i][j]=0;
+        }
+    }
+
+    for (int i=0;i<E1;i++){
+        int a,b;
+        cout <<"Enter the starting of vertex :-";
+        cin >> a;
+        cout <<"Enter the ending of vertex :-";
+        cin >> b;
+        G1[a][b]=1;
+        G1[b][a]=1;
+    }
+
+    for(int k=0;k<V1;k++){
+        for(int j=0;j<V1;j++){
+            cout<<G1[k][j]<<"  ";
+        }
+        cout<<"\n";
+    }
+    // adjlist2[vertex_1].push_back(vertex_2);
+    // adjlist2[vertex_2].push_back(vertex_1);
+    int V2,E2;
+    cout <<"Enter the number of vertices for graph G2:- " ;
+    cin >> V2;
+    cout <<"Enter the number of edges for graph G2:- " ;
+    cin >>E2;
+    int G2[V2][V2];
+
+    for(int i=0;i<V2;i++){
+        for(int j=0;j<V2;j++){
+            G2[i][j]=0;
+        }
+    }
+
+    for (int i=0;i<E2;i++){
+        int a,b;
+        cout <<"Enter the starting of vertex :-";
+        cin >> a;
+        cout <<"Enter the ending of vertex :-";
+        cin >> b;
+        G2[a][b]=1;
+        G2[b][a]=1;
+    }
+
+    for(int k=0;k<V2;k++){
+        for(int j=0;j<V2;j++){
+            cout<<G2[k][j]<<"  ";
+        }
+        cout<<"\n";
+    }
+    int flag=1;
+    while(flag==1){
+        cout << "\nEnter the choice:- \n1. Union\n2. Intersection\n3. Compliment\n4. Ring Sum\n5. Difference\n";
+        int c;
+        cin>>c;
+        switch(c){
+        case 1:  // UNION
+           {
+           cout<<"Union of both the graphs :- \n";
+           int V3 = max(V1,V2);
+            int G3[V3][V3];
+            for(int i=0;i<V3;i++){
+                for(int j=0;j<V3;j++){
+                    G3[i][j]=0;
+                }
+            }
+            for(int i=0;i<V1;i++){
+                for(int j=0;j<V1;j++){
+                    if(G1[i][j]==1){
+                        G3[i][j]=1;
+                    }
+                }
+            }
+            for(int i=0;i<V2;i++){
+                for(int j=0;j<V2;j++){
+                    if(G2[i][j]==1){
+                        G3[i][j]=1;
+                    }
+                }
+            }
+
+            for(int k=0;k<V3;k++){
+                for(int j=0;j<V3;j++){
+                    cout<<G3[k][j]<<"  ";
+                }
+                cout<<"\n";
+            }
+            break;
+           }
+        case 2:  //INTERSECTION
+            {
+                cout<<"Intersection of both the graphs :- \n";
+                int V3 = min(V1,V2);
+                int G3[V3][V3];
+                for(int i=0;i<V3;i++){
+                    for(int j=0;j<V3;j++){
+                        G3[i][j]=0;
+                    }
+                }
+
+                for(int i=0;i<V3;i++){
+                    for(int j=0;j<V3;j++){
+                        if(G1[i][j]==1 && G2[i][j]==1){
+                            G3[i][j]=1;
+                        }
+                    }
+                }
+                for(int k=0;k<V3;k++){
+                    for(int j=0;j<V3;j++){
+                        cout<<G3[k][j]<<"  ";
+                    }
+                cout<<"\n";
+                }
+
+                break;
+            }
+
+        case 3:
+            {
+                /*cout<<"Compliment of G1 :-\n";
+                int V3 = V1;
+                int G3[V3][V3];
+
+                for(int i=0;i<V3;i++){
+                    for(int j=0;j<V3;j++){
+                        G3[i][j]=0;
+                    }
+                }
+
+                for(int i=0;i<V3;i++){
+                    for(int j=0;j<V3;j++){
+                        if(i==j) continue;
+                        if(G1[i][j]==0) G3[i][j]=1;
+                        else G3[i][j]=0;
+                    }
+                }
+                for(int k=0;k<V3;k++){
+                    for(int j=0;j<V3;j++){
+                        cout<<G3[k][j]<<"  ";
+                    }
+                cout<<"\n";
+                }*/
+
+                cout<<"Compliment of G2 :-\n";
+                int V4 = V2;
+                int G4[V4][V4];
+
+                for(int i=0;i<V4;i++){
+                    for(int j=0;j<V4;j++){
+                        G4[i][j]=0;
+                    }
+                }
+
+                for(int i=0;i<V4;i++){
+                    for(int j=0;j<V4;j++){
+                        if(i==j) continue;
+                        if(G2[i][j]==0) G4[i][j]=1;
+                        else G4[i][j]=0;
+                    }
+                }
+                for(int k=0;k<V4;k++){
+                    for(int j=0;j<V4;j++){
+                        cout<<G4[k][j]<<"  ";
+                    }
+                cout<<"\n";
+                }
+
+                break;
+            }
+
+        case 4: //Ring sum (G1 union G2) - (G1 intersection G2)
+            {
+            //union of two graphs
+            int V3 = max(V1,V2);
+            int G3[V3][V3];
+            for(int i=0;i<V3;i++){
+                for(int j=0;j<V3;j++){
+                    G3[i][j]=0;
+                }
+            }
+            for(int i=0;i<V1;i++){
+                for(int j=0;j<V1;j++){
+                    if(G1[i][j]==1){
+                        G3[i][j]=1;
+                    }
+                }
+            }
+            for(int i=0;i<V2;i++){
+                for(int j=0;j<V2;j++){
+                    if(G2[i][j]==1){
+                        G3[i][j]=1;
+                    }
+                }
+            }
+
+            //intersection of two graphs
+            int V4 = min(V1,V2);
+            int G4[V4][V4];
+            for(int i=0;i<V4;i++){
+                for(int j=0;j<V4;j++){
+                    G4[i][j]=0;
+                }
+            }
+
+            for(int i=0;i<V4;i++){
+                for(int j=0;j<V4;j++){
+                    if(G1[i][j]==1 && G2[i][j]==1){
+                        G4[i][j]=1;
+                        G3[i][j]=G3[i][j]-G4[i][j];
+                    }
+                }
+            }
+
+            for(int k=0;k<V3;k++){
+                    for(int j=0;j<V3;j++){
+                        cout<<G3[k][j]<<"  ";
+                    }
+                cout<<"\n";
+                }
+
+                break;
+            }
+
+        case 5:
+            {
+                //G1 - G2
+                cout<<"\nDifference of graph G1 - G2 :-\n";
+                int V3 = V1;
+                int G3[V3][V3];
+
+                for(int i=0;i<V3;i++){
+                    for(int j=0;j<V3;j++){
+                        G3[i][j]=G1[i][j];
+                        if(G1[i][j]==1 && G2[i][j]==1) G3[i][j]=0;
+                    }
+                }
+                for(int k=0;k<V3;k++){
+                    for(int j=0;j<V3;j++){
+                        cout<<G3[k][j]<<"  ";
+                    }
+                cout<<"\n";
+                }
+
+                //G2 - G1
+                cout<<"\nDifference of graph G2 - G1 :-\n";
+                int V4 = V2;
+                int G4[V4][V4];
+
+                for(int i=0;i<V4;i++){
+                    for(int j=0;j<V4;j++){
+                        G4[i][j]=G2[i][j];
+                        //if(G1[i][j]==1 && G2[i][j]==1) G4[i][j]=0;
+                    }
+                }
+
+                for(int i=0;i<V1;i++){
+                    for(int j=0;j<V1;j++){
+
+                        if(G1[i][j]==1 && G2[i][j]==1) G4[i][j]=0;
+                    }
+                }
+
+                for(int k=0;k<V4;k++){
+                    for(int j=0;j<V4;j++){
+                        cout<<G4[k][j]<<"  ";
+                    }
+                cout<<"\n";
+                }
+
+                break;
+            }
+
+        default:
+                cout << "Invalid Choice";
+                break;
+        }
+        cout << "Do you want to enter the choice again\n1. yes\n2. no\n";
+        cin >> flag;
+    }
+    }
+    return 0;
+}
+
